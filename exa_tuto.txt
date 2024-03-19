@@ -1,0 +1,145 @@
+pip install sphinx
+pip install pyqt6
+pip install reportlab
+-----------------------------------------------------------------------------------------
+
+1)
+Poner en el exame12032024.rst todo lo que pida comentar, sean imágenes tablas o lo que mande:
+
++------------+------------+------------+
+|         1  |          2 |         3  |
++============+============+============+
+| indice     | nombre     | apellido   |
++------------+------------+------------+
+| indice2    | nombre2    | apellido2  |
++------------+------------+------------+
+
+IMAGEN
+^^^^^^
+En esta imagen podemos hacernos una mejor idea de como es el programa
+
+
+.. image:: _static/images/examen_lucas.jpg
+   :height: 200px
+   :width: 200 px
+   :scale: 100%
+   :alt: captura examen
+   :align: center
+
+
+
+2)
+Comentar la clase que pide (conexionBD) en este caso, copiarla y pegarla dentro de source
+si aún no está y crear un rst o editar uno existente poniendo en automodule y abajo la clase 
+que pide que comentemos:
+
+conexionBD module
+=================
+
+.. automodule:: conexionBD // Poner la clase pedida
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+    conexionBD // Poner la clase pedida
+
+
+3) Te pide unir el ejer 1 con el 2:
+
+Desde el index.rst lo edito y pongo las clases a las que quiera hacer referencia desde ahí:
+
+.. Examen Lucas Feliu documentation master file, created by
+   sphinx-quickstart on Tue Mar 12 08:52:39 2024.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Examen Lucas F. documentation!
+========================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   // Introducir clases que quieras conectar desde el index (índice):
+   conexionBD
+   exame12032024
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+
+4 y 5) 
+Nos pide hacer una factura tal cual la que pone en el examen, para ello creamos una clase 
+FacturaExamen con todas las clases, fuera de source y hacemos la factura lo más parecida posible:
+
+from reportlab.lib import colors
+
+from reportlab.platypus import SimpleDocTemplate, Table, Image, Paragraph, Spacer, Flowable
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+
+
+class Factura:
+
+    def __init__(self,NOMBRE, numCliente="1", nameCliente="Ana", apellidos="Perez Diz", direccion="Garcia Barbon",
+                ciudad="Vigo", provincia="Pontevedra", cp="36214", telf="986456780", pais="España", agComercial="1"):
+        self.numCliente = numCliente
+        self.nameCliente = nameCliente
+        self.apellidos = apellidos
+        self.direccion = direccion
+        self.ciudad = ciudad
+        self.provincia = provincia
+        self.cp = cp
+        self.telf = telf
+        self.pais = pais
+        self.agComercial = agComercial
+
+
+
+        self.sampleSheet = getSampleStyleSheet()
+        self.elementosDoc = []
+        # llamamos a los metodos
+        self.tabla()
+
+        # construimos el pdf
+        self.documento = SimpleDocTemplate(NOMBRE, pagesize=A4)
+        self.documento.build(self.elementosDoc)
+
+    def tabla(self):
+        elementos = [
+            ["Numero cliente", self.numCliente, "Nome Cliente", self.nameCliente],
+            ["Apellidos", self.apellidos, "", ""],
+            ["Direccion:", self.direccion, "", ""],
+            ["Cidade", self.ciudad, "Provincia", self.provincia],
+            ["Codigo Postal", self.cp, "Telefono", self.telf],
+            ["Pais", self.pais, "Axenta Comercial", self.agComercial]
+        ]
+        style = [
+            # Color de la letra (inicio columna, inicio fila), (fin columna, fin fila), color
+            ("BACKGROUND", (0, 0), (0, -1), colors.lightgrey),
+            ("BOX", (0, 0), (-1, -1), 1, colors.black),
+            ("INNERGRID", (0, 0), (-1, -1), 1, colors.lightgrey),
+            ("BACKGROUND", (2, 0), (2, 0), colors.lightgrey),
+            ("BACKGROUND", (2, 3), (2, -1), colors.lightgrey),
+        ]
+
+        table = Table(data=elementos, style=style, colWidths=[100,120,100,100])
+        self.elementosDoc.append(table)
+if __name__ == "__main__":
+    factura = Factura()
+    print("Factura creada")
+
+Para generar la factura ejecutamos exame12032024.py, nos muestra la interfaz y en este caso le damos a 
+imprimir2 lo cual genera factura.pdf tal y como la diseñamos fuera de source donde tdas la clases.
+
+5)
+6)
+
+
+make html

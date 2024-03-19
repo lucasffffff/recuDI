@@ -1,0 +1,64 @@
+exame12032024 module
+====================
+
+.. automodule:: exame12032024
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+    exame12032024
+    conexionBD
+
+
+EXAMEN LUCAS FELIU
+===================================
+
+Bien a continuación vamos a explicar el funcionamiento básico del programa
+
+Tenemos varios **QLINEedit**
+
+* Numero Cliente
+    * Nome
+* Apellidos
+* Direccion
+* Cidade
+    * provincia
+* Codigo Postal
+* Telefono
+* País
+* Axente Comercial
+
+
+
+Funcionamiento
+--------------
+
+O programa engade nunha taboa os elementos que le pasamos al foarmulario, ya que consta de un boton **engadir**
+
+Esta tabla escucha de una base de datos, asique si seleccionamos cualquier elemento nos va a permitir **borrarlo** y **editarlo*
+
+La tabla se ve tal que así:
+
++------------+------------+------------+
+|         1  |          2 |         3  |
++============+============+============+
+| indice     | nombre     | apellido   |
++------------+------------+------------+
+| indice2    | nombre2    | apellido2  |
++------------+------------+------------+
+
+
+
+
+
+IMAGEN
+^^^^^^
+En esta imagen podemos hacernos una mejor idea de como es el programa
+
+
+.. image:: _static/images/examen_lucas.jpg
+   :height: 200px
+   :width: 200 px
+   :scale: 100%
+   :alt: captura examen
+   :align: center

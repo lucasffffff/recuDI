@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>exame12032024 &#8212; Examen Lucas Feliu  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for exame12032024</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtCore</span> <span class="kn">import</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">Qt</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">QApplication</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QGridLayout</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span>
+                             <span class="n">QLabel</span><span class="p">,</span> <span class="n">QListWidget</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span>  <span class="n">QLineEdit</span><span class="p">,</span>
+                             <span class="n">QRadioButton</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QTableView</span><span class="p">,</span> <span class="n">QAbstractItemView</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">modeloTaboa</span> <span class="kn">import</span> <span class="n">ModeloTaboa</span>
+<span class="kn">from</span> <span class="nn">conexionBD</span>   <span class="kn">import</span> <span class="n">ConexionBD</span>
+<span class="kn">from</span> <span class="nn">FacturaExamen</span> <span class="kn">import</span> <span class="n">Factura</span>
+<span class="kn">from</span> <span class="nn">facturaExamen2</span> <span class="kn">import</span> <span class="n">Factura2</span>
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal">[docs]</a>
+<span class="k">class</span> <span class="nc">FiestraPrincipal</span> <span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Exame 12-03-2024&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">estado</span><span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+
+
+        <span class="n">caixaV</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+
+
+        <span class="n">gpbCliente</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Cliente&quot;</span><span class="p">)</span>
+        <span class="n">gpbCliente</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">caixaV</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">gpbCliente</span><span class="p">)</span>
+
+        <span class="n">lblNumeroCliente</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Número Cliente&quot;</span><span class="p">)</span>
+        <span class="n">lblNomeCliente</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Nome&quot;</span><span class="p">)</span>
+        <span class="n">lblApelidosCliente</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Apelidos&quot;</span><span class="p">)</span>
+        <span class="n">lblDirección</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Dirección&quot;</span><span class="p">)</span>
+        <span class="n">lblCidade</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Cidade&quot;</span><span class="p">)</span>
+        <span class="n">lblProvinciaEstado</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Provincia&quot;</span><span class="p">)</span>
+        <span class="n">lblCodigoPostal</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Código postal&quot;</span><span class="p">)</span>
+        <span class="n">lblTelefono</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Teléfono&quot;</span><span class="p">)</span>
+        <span class="n">lblPais</span> <span class="o">=</span> <span class="n">QLabel</span> <span class="p">(</span><span class="s2">&quot;País&quot;</span><span class="p">)</span>
+        <span class="n">lblAxenteComercial</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;AxenteComercial&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+
+
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblNumeroCliente</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblNomeCliente</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblApelidosCliente</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblDirección</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblCidade</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblProvinciaEstado</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblCodigoPostal</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblTelefono</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblPais</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">lblAxenteComercial</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+
+        <span class="n">caixaHTaboa</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span> <span class="o">=</span> <span class="n">QTableView</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="o">.</span><span class="n">verticalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectionBehavior</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectionMode</span><span class="o">.</span><span class="n">SingleSelection</span><span class="p">)</span>
+
+        <span class="n">caixaHTaboa</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conxBD</span> <span class="o">=</span> <span class="n">ConexionBD</span><span class="p">(</span><span class="s2">&quot;modelosClasicos.dat&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conxBD</span><span class="o">.</span><span class="n">conectaBD</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conxBD</span><span class="o">.</span><span class="n">creaCursor</span><span class="p">()</span>
+
+        <span class="n">clientes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conxBD</span><span class="o">.</span><span class="n">consultaSenParametros</span><span class="p">(</span><span class="s2">&quot;Select * from clientes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conxBD</span><span class="o">.</span><span class="n">pechaBD</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span> <span class="o">=</span> <span class="n">ModeloTaboa</span><span class="p">(</span><span class="n">clientes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tvwClientes</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_modelo_selectionChanged</span><span class="p">)</span>
+
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Engadir&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_btnEngadir_pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Editar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_btnEditar_pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Borrar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_btnBorrar_pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir1</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;imprimir 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir1</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">imprimir1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">text</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir2</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;imprimir 2&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir2</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">imprimir2</span><span class="p">())</span>
+
+
+        <span class="n">caixaBotonsCorreo</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">caixaBotonsCorreo</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+        <span class="n">caixaBotonsCorreo</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="p">)</span>
+        <span class="n">caixaBotonsCorreo</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="p">)</span>
+        <span class="n">caixaBotonsCorreo</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="p">)</span>
+
+        <span class="n">caixaHTaboa</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">caixaBotonsCorreo</span><span class="p">)</span>
+
+        <span class="n">caixaV</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">caixaHTaboa</span><span class="p">)</span>
+
+        <span class="n">caixaBtnAceptar</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnAceptar</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Aceptar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnAceptar</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_btnAceptar_pressed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnCancelar</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cancelar&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnCancelar</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_btnCancelar_pressed</span><span class="p">)</span>
+        <span class="n">caixaBtnAceptar</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignmentFlag</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+        <span class="n">caixaBtnAceptar</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnCancelar</span><span class="p">)</span>
+        <span class="n">caixaBtnAceptar</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnAceptar</span><span class="p">)</span>
+        <span class="n">caixaBtnAceptar</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir1</span><span class="p">)</span>
+        <span class="n">caixaBtnAceptar</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btonImprimir2</span><span class="p">)</span>
+        <span class="n">caixaV</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">caixaBtnAceptar</span><span class="p">)</span>
+
+
+        <span class="n">contedor</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+
+        <span class="n">contedor</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">caixaV</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">contedor</span><span class="p">)</span>
+
+        <span class="c1">#self.setFixedSize (400,300)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FiestraPrincipal.on_btnEngadir_pressed">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_btnEngadir_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_btnEngadir_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="s1">&#39;Engadir&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">borrarCampos</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal.on_btnEditar_pressed">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_btnEditar_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_btnEditar_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">hasSelection</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="s1">&#39;Editar&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cargarCamposDendeSeleccion</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiestraPrincipal.on_btnBorrar_pressed">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_btnBorrar_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_btnBorrar_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">hasSelection</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span><span class="s2">&quot;Borrar&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cargarCamposDendeSeleccion</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal.on_btnAceptar_pressed">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_btnAceptar_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_btnAceptar_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="s1">&#39;Engadir&#39;</span><span class="p">:</span>
+            <span class="n">conxBD</span> <span class="o">=</span> <span class="n">ConexionBD</span><span class="p">(</span><span class="s2">&quot;modelosClasicos.dat&quot;</span><span class="p">)</span>
+            <span class="n">conxBD</span><span class="o">.</span><span class="n">conectaBD</span><span class="p">()</span>
+            <span class="n">conxBD</span><span class="o">.</span><span class="n">creaCursor</span><span class="p">()</span>
+            <span class="n">conxBD</span><span class="o">.</span><span class="n">engadeRexistro</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;INSERT INTO clientes (numeroCliente, nomeCliente, apelidosCliente, telefono, direccion, cidade, provinciaEstado, codigoPostal, pais, axenteComercial)</span>
+<span class="s2">                                           VALUES (?,?,?,?,?,?,?,?,?,?)&quot;&quot;&quot;</span><span class="p">,</span>
+                                  <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">text</span><span class="p">()),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                  <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">text</span><span class="p">()))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">text</span><span class="p">()),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                      <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">text</span><span class="p">())))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">layoutChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="s1">&#39;Borrar&#39;</span><span class="p">:</span>
+            <span class="n">filas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">selectedRows</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">filas</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">fila</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
+                <span class="n">conxBD</span> <span class="o">=</span> <span class="n">ConexionBD</span><span class="p">(</span><span class="s2">&quot;modelosClasicos.dat&quot;</span><span class="p">)</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">conectaBD</span><span class="p">()</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">creaCursor</span><span class="p">()</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">borraRexistro</span><span class="p">(</span><span class="s2">&quot;DELETE FROM clientes WHERE numeroCliente = ?&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+                <span class="k">del</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">layoutChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="s1">&#39;Editar&#39;</span><span class="p">:</span>
+            <span class="n">filas</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">selectedRows</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">filas</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">fila</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
+                <span class="n">conxBD</span> <span class="o">=</span> <span class="n">ConexionBD</span><span class="p">(</span><span class="s2">&quot;modelosClasicos.dat&quot;</span><span class="p">)</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">conectaBD</span><span class="p">()</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">creaCursor</span><span class="p">()</span>
+                <span class="n">conxBD</span><span class="o">.</span><span class="n">actualizaRexistro</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;UPDATE clientes SET </span>
+<span class="s2">                                                nomeCliente = ?,</span>
+<span class="s2">                                                apelidosCliente = ?,</span>
+<span class="s2">                                                telefono = ?,</span>
+<span class="s2">                                                direccion = ?,</span>
+<span class="s2">                                                cidade = ?,</span>
+<span class="s2">                                                provinciaEstado = ?,</span>
+<span class="s2">                                                codigoPostal = ?,</span>
+<span class="s2">                                                pais = ?,</span>
+<span class="s2">                                                axenteComercial = ?</span>
+<span class="s2">                                            Where numeroCliente = ?&quot;&quot;&quot;</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                                              <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">text</span><span class="p">()),</span>
+                                              <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                                            <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">layoutChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">borrarCampos</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estado</span><span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FiestraPrincipal.on_btnCancelar_pressed">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_btnCancelar_pressed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_btnCancelar_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span> <span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">borrarCampos</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal.on_modelo_selectionChanged">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.on_modelo_selectionChanged">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_modelo_selectionChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEngadir</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnBorrar</span><span class="o">.</span><span class="n">setEnabled</span> <span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnEditar</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal.cargarCamposDendeSeleccion">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.cargarCamposDendeSeleccion">[docs]</a>
+    <span class="k">def</span> <span class="nf">cargarCamposDendeSeleccion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccion</span><span class="o">.</span><span class="n">selectedRows</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">filas</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">fila</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">6</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">7</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">8</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">9</span><span class="p">]))</span></div>
+
+
+
+
+<div class="viewcode-block" id="FiestraPrincipal.borrarCampos">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.borrarCampos">[docs]</a>
+    <span class="k">def</span> <span class="nf">borrarCampos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNumeroCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtNomeCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtApelidosCliente</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTelefono</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtDireccion</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCidade</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtProvinciaEstado</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCodigoPostal</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPais</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtAxenteComercial</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiestraPrincipal.imprimir2">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.imprimir2">[docs]</a>
+    <span class="k">def</span> <span class="nf">imprimir2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">factura</span> <span class="o">=</span> <span class="n">Factura2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FActura creada con exito&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FiestraPrincipal.imprimir1">
+<a class="viewcode-back" href="../exame12032024.html#exame12032024.FiestraPrincipal.imprimir1">[docs]</a>
+    <span class="k">def</span> <span class="nf">imprimir1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">factura</span> <span class="o">=</span> <span class="n">Factura</span><span class="p">(</span><span class="s2">&quot;facturaBD&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">2</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">3</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">4</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">5</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">6</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">7</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">8</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modelo</span><span class="o">.</span><span class="n">datos</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">9</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;facrtura2 creada&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">aplicacion</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">fiestra</span> <span class="o">=</span> <span class="n">FiestraPrincipal</span><span class="p">()</span>
+
+    <span class="n">aplicacion</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Examen Lucas Feliu</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../conexionBD.html">conexionBD module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exame12032024.html">exame12032024 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exame12032024.html#examen-di-lucas-f">Lucas Feliu</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Lucas Feliu.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
